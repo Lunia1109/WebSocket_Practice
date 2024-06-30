@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import com.practice.websocket.dto.HotTalk;
+import com.practice.websocket.dto.HotTalkContent;
 import com.practice.websocket.hottalk.dao.HotTalkDao;
 
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,14 @@ public class HotTalkServiceImpl implements HotTalkService {
 
 	private final HotTalkDao dao;
 	private final SqlSession session;
+
 	@Override
 	public List<HotTalk> selectHotTalkByNo(int no) {
 		return dao.selectHotTalkByNo(session, no);
+	}
+	@Override
+	public List<HotTalkContent> selectHotTalkContentByHotTalkNo(int hotTalkNo, int employeeNo) {
+		return dao.selectHotTalkContentByHotTalkNo(session, hotTalkNo, employeeNo);
 	}
 
 }

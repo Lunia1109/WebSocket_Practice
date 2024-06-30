@@ -1,6 +1,7 @@
 package com.practice.websocket.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class HotTalkContent {
 	private int hotTalkContentNo;
 	private int hotTalkNo;
-	private int employeeNo;
+	private int hotTalkContentSender;
 	private String hotTalkContent;
+	private String hotTalkContentIsread;
 	private LocalDateTime hotTalkContentDate;
 }

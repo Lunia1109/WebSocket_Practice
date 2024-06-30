@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChattingHandler extends TextWebSocketHandler{
 
 	private Map<Integer, WebSocketSession> employees = new HashMap<>();
-	private Date enterTime = new Date(System.currentTimeMillis());
 	private final HotTalkService service;
 	@Autowired
 	private ObjectMapper mapper;
@@ -55,22 +54,26 @@ public class ChattingHandler extends TextWebSocketHandler{
     }
 
     // 특정 채팅방 기존 내용 가져오는 메소드
-    private void getChattingContent(WebSocketSession session, int roomNo) {
-    	try {
-    		List<HotTalkContent> contents = service.selectHotTalkContentByNo(roomNo);
-    	} catch (IOException e) {
-    		try {
-    			session.sendMessage(new TextMessage("채팅방 내용을 불러오는데 실패했습니다"));
-    		}catch(IOException ex) {
-    			log.error("에러 메세지 전송 실패 : {}", ex.getMessage());
-    		}
-    	}
-    }
+    private void getChattingContent(WebSocketSession session, int hotTalkNo, int employeeNo) {
+		try {
+			List<HotTalkContent> contents = service.selectHotTalkContentByHotTalkNo(hotTalkNo, employeeNo);
+			log.debug("contents : {}",contents);
+			session.sendMessage(new TextMessage(mapper.writeValueAsString(contents)));
+		} catch (IOException e) {
+			log.error("채팅방 내용 불러오는데 문제 발생 : {}", e.getMessage());
+			try {
+				session.sendMessage(new TextMessage("채팅방 내용을 불러오는데 실패했습니다"));
+			}catch(IOException ex) {
+				log.error("에러 메세지 전송 실패 : {}", ex.getMessage());
+			}
+		}
+	}
+
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		log.debug("{}",enterTime);
-		log.debug("afterConnectionEstablished 메소드 실행");
+		// log.debug("{}",enterTime);
+		// log.debug("afterConnectionEstablished 메소드 실행");
 	}
 
     @Override
@@ -79,12 +82,14 @@ public class ChattingHandler extends TextWebSocketHandler{
             HotTalkMessage msg = mapper.readValue(message.getPayload(), HotTalkMessage.class);
             switch(msg.getType()) {
                 case "open":
+                	log.debug("{}",session, msg.getEmployeeNo());
                 	addEmployee(session, msg.getEmployeeNo());
                     renewalChattingRoom(session, msg.getEmployeeNo());
                     break;
                 case "enter":
                     // log.debug("더블클릭 누름");
-                	getChattingContent(session, msg.getHotTalkNo());
+                    log.debug("msg : {}", msg);;
+                	getChattingContent(session, msg.getHotTalkNo(), msg.getEmployeeNo());
                     break;
                 default:
                     log.warn("알 수 없는 메시지 타입: {}", msg.getType());

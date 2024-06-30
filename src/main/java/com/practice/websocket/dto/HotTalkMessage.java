@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class HotTalkMessage {
 	private String type;
-	private int hotTalkNo;
+	private String hotTalkTitle;
 	private int employeeNo;
-	private String content;
+	private int hotTalkNo;
 	private LocalDateTime eventTime;
 }

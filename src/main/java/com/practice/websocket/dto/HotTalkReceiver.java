@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class HotTalkReceiver {
 	private int hotTalkContentNo;
 	private int employeeNo;
-	private String hotTalkContentStatus;
+	private String hotTalkContentIsread;
 }
