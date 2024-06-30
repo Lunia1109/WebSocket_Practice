@@ -36,4 +36,4 @@ build/
 /src/main/resources/**/*.xml
 .dbeaver/
 Script
-.log
+*.log
